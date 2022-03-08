@@ -1,16 +1,22 @@
-FROM bids/base_fsl
+FROM nvidia/cuda:11.1-cudnn8-devel-ubuntu20.04
+COPY . /app
+WORKDIR /app
 
-# Install python, nibabel and numpy (nibabel>=2.1 requires python>=3.5, ubuntu trusty has only python 3.4)
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip python3-numpy && \
-    pip3 install nibabel==2.0 && \
-    apt-get remove -y python3-pip && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ENV TZ=Europe
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-ENV PYTHONPATH=""
+#ENV GPUID="0,1"
 
-COPY run.py /run.py
+# Install some basic utilities
+RUN apt-get update && apt-get install -y python3 \
+    python3-venv \
+    make \
+    tk-dev \
+    tcl-dev \
+    libgl1-mesa-glx \
+ && apt-get install -yq libgtk2.0-dev \
+ && rm -rf /var/lib/apt/lists/*
 
-COPY version /version
+RUN make all
 
-ENTRYPOINT ["/run.py"]
+ENTRYPOINT ["venv/bin/python3", "run.py"]
