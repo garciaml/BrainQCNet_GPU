@@ -1,0 +1,13 @@
+*/temp*
+*/*/temp*
+temp?
+*.md
+!README.md
+.circleci
+.dockerignore.swp
+.git
+.gitattributes
+.gitignore
+boutiques
+git-set-file-times
+Singularity
