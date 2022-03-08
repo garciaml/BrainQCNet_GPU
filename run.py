@@ -41,10 +41,11 @@ parser.add_argument('--participant_label', help='The label(s) of the participant
                    'provided all subjects should be analyzed. Multiple '
                    'participants can be specified with a space separated list.',
                    nargs="+")
-parser.add_argument('--skip_bids_validator', help='Whether or not to perform BIDS dataset validation',
-                   action='store_true')
+#parser.add_argument('--skip_bids_validator', help='Whether or not to perform BIDS dataset validation',
+#                   action='store_true')
 parser.add_argument('-v', '--version', action='version',
                     version='BIDS-App example version {}'.format(__version__))
+parser.add_argument('--pythonpath', default='venv/bin', help='Environnemnt in which images are processed')
 parser.add_argument('--gpuid', default='0,1', help='Ids of GPUs to run ProtoPNet prediction on')
 parser.add_argument('--masks', default='0', help='0 : return log file; 1 : predict and save prototypes.')
 parser.add_argument('--pred_method', default='percentage', help='percentage: percentage of slices predicted 1; mean: mean of predictions on each slice; median: median of predictions on each slice')
@@ -54,13 +55,13 @@ parser.add_argument('--modeldir', default='./saved_models/resnet152/19112020/', 
 
 args = parser.parse_args()
 
-if not args.skip_bids_validator:
-    #run('bids-validator %s'%args.bids_dir)
-    from bids_validator import BIDSValidator
-    validator = BIDSValidator()
-    filepaths = glob(os.path.join(args.bids_dir, "*"))
-    for filepath in filepaths:
-        print(filepath, ":", validator.is_bids(filepath))  # will print True, and then False
+#if not args.skip_bids_validator:
+#    #run('bids-validator %s'%args.bids_dir)
+#    from bids_validator import BIDSValidator
+#    validator = BIDSValidator()
+#    filepaths = glob(os.path.join(args.bids_dir, "*"))
+#    for filepath in filepaths:
+#        print(filepath, ":", validator.is_bids(filepath))  # will print True, and then False
 
 subjects_to_analyze = []
 # only for a subset of subjects
@@ -103,7 +104,7 @@ if args.analysis_level == "participant":
                                             "ses-*","anat",
                                             "*_T1w.nii*")):
                 filename = T1_file.split("/")[-1]
-                cmd = "./preprocess_and_predict.sh %s %s %s %s %s %s %s %s %s"%(T1_file, filename, subject_label, args.output_dir, args.pythonpath, args.gpuid, args.masks, args.pred_method, args.n_areas)
+                cmd = "./preprocess_and_predict.sh %s %s %s %s %s %s %s %s %s %s"%(T1_file, filename, subject_label, args.output_dir, args.pythonpath, args.gpuid, args.masks, args.pred_method, args.n_areas, args.modeldir)
                 run(cmd)
 
 # running group level
