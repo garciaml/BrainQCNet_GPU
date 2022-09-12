@@ -1,11 +1,11 @@
-base_architecture = 'vgg19' # or see in vgg_features.py, resnet_features.py, densenet_features.py
+base_architecture = 'resnet152' # or see in vgg_features.py, resnet_features.py, densenet_features.py
 img_size = 224 # to check
 prototype_shape = (2000, 128, 1, 1)
 num_classes = 2
 prototype_activation_function = 'log'
 add_on_layers_type = 'regular'
 
-experiment_run = '16112020'
+experiment_run = '12092022'
 
 data_path = '../datasets/'
 train_dir = data_path + 'train_cropped_augmented/'
