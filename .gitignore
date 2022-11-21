@@ -87,3 +87,11 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Local Files
+find_nearest.py
+main.py
+pretrained_models/
+prune.py
+saved_models/
+
