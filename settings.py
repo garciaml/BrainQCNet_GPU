@@ -1,13 +1,13 @@
 base_architecture = 'resnet152' # or see in vgg_features.py, resnet_features.py, densenet_features.py
 img_size = 224 # to check
-prototype_shape = (2000, 128, 1, 1)
+prototype_shape = (200, 128, 1, 1)
 num_classes = 2
-prototype_activation_function = 'log'
+prototype_activation_function = 'linear'
 add_on_layers_type = 'regular'
 
-experiment_run = '12092022'
+experiment_run = '12092022-200_prototypes'
 
-data_path = '../datasets/'
+data_path = '/home/melanie/Downloads/datasets/'
 train_dir = data_path + 'train_cropped_augmented/'
 test_dir = data_path + 'validation_cropped/'
 train_push_dir = data_path + 'train_cropped/'
@@ -35,5 +35,5 @@ coefs = {
 num_train_epochs = 1000
 num_warm_epochs = 5
 
-push_start = 10
-push_epochs = [i for i in range(num_train_epochs) if i % 10 == 0]
+push_start = 5
+push_epochs = [i for i in range(num_train_epochs) if i % 5 == 0]
