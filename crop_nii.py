@@ -3,6 +3,7 @@
 import numpy as np
 import nibabel as nib
 import argparse
+import os
 
 parser = argparse.ArgumentParser()
 # parser.add_argument('-indir', nargs=1, type=str) 
@@ -38,5 +39,6 @@ x1, y1, z1 = coords.max(axis=0) + 1   # slices are exclusive at the top
 cropped = img[x0:x1, y0:y1, z0:z1]
 
 # filename = inpath.split("/")[-1]
-nib.save(filename=outdir + "/" + filename, img=nib.Nifti1Image(cropped, affine))
+#nib.save(filename=outdir + "/" + filename, img=nib.Nifti1Image(cropped, affine))
+nib.save(filename=os.path.join(outdir, filename), img=nib.Nifti1Image(cropped, affine))
 
