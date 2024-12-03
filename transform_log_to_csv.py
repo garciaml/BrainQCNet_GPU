@@ -77,10 +77,9 @@ def get_results_locally(n, min_slices_min1, max_slices_plus1, axis_slices, table
     return pd.DataFrame(results_locally)
 
 
-def get_predictions_from_log(indir, subid, logfile, method="percentage", n_areas=3):
+def get_predictions_from_log(directory, subid, logfile, method="percentage", n_areas=3):
     '''
-    indir: input directory
-    subid: subject identifier; also the name of the folder of this subject in indir
+    directory: input directory
     logfile: name of the log file
     method: method of calculation of the probabilities
     - percentage: percentage of slices predicted 1
@@ -88,10 +87,10 @@ def get_predictions_from_log(indir, subid, logfile, method="percentage", n_areas
     - median: median of predictions on each slice
     n_areas: integer to sample each axis into n areas, and computes the probability and prediction of class in each area
     '''
-    directory = os.path.join(indir, subid)
+    #directory = os.path.join(indir, subid)
     filepath = os.path.join(directory, logfile)
     ### Tests
-    # is indir / subid existing
+    # is directory existing
     assert os.path.exists(directory), 'The directory ' + directory + ' does not exist.'
     assert os.path.isdir(directory), directory + ' is not a directory.'
     # is logfile existing
@@ -200,8 +199,8 @@ if __name__ == '__main__':
     y_results_locally["pred"] = y_results_locally["proba"].apply(compute_proba_to_pred) 
     z_results_locally["pred"] = z_results_locally["proba"].apply(compute_proba_to_pred)  
     # Save in a csv table
-    tot_df.to_csv(os.path.join(indir, subid, "tot_df.csv"), index=False)
-    table.to_csv(os.path.join(indir, subid, "table.csv"), index=False)
-    x_results_locally.to_csv(os.path.join(indir, subid, "x_results_locally.csv"), index=False)
-    y_results_locally.to_csv(os.path.join(indir, subid, "y_results_locally.csv"), index=False)
-    z_results_locally.to_csv(os.path.join(indir, subid, "z_results_locally.csv"), index=False)
+    tot_df.to_csv(os.path.join(indir, "tot_df.csv"), index=False)
+    table.to_csv(os.path.join(indir, "table.csv"), index=False)
+    x_results_locally.to_csv(os.path.join(indir, "x_results_locally.csv"), index=False)
+    y_results_locally.to_csv(os.path.join(indir, "y_results_locally.csv"), index=False)
+    z_results_locally.to_csv(os.path.join(indir, "z_results_locally.csv"), index=False)

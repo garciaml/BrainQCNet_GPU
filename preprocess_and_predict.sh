@@ -27,6 +27,7 @@ poule() {
 
 mouette() {
     python transform_log_to_csv.py -indir $1 -subid $2 -method $3 -n_areas $4
+    #python transform_log_to_csv.py -indir $1 -method $2 -n_areas $3
 }
 
 # Naming inputs
@@ -45,16 +46,16 @@ MODELDIR=${10}
 # Cropping 3D image
 hibou $INPATH . $PYTHONPATH $FILENAME
 # Generating 2D slices in all 3 axes from 3D images
-mkdir -p $OUTDIR/$SUBID
-chouette $FILENAME $SUBID $OUTDIR/$SUBID
+#mkdir -p $OUTDIR/$SUBID
+chouette $FILENAME $SUBID $OUTDIR
 # Removing cropped 3D image
 rm ./$FILENAME
 # Predicting on all the 2D slices 
-poule $MODELDIR $MODEL $SUBID $OUTDIR/$SUBID $GPUID $MASKS
+poule $MODELDIR $MODEL $SUBID $OUTDIR $GPUID $MASKS
 mouette $OUTDIR $SUBID $PRED_METHOD $N_AREAS
 # Deactivating virtual environment
 deactivate
 # Removing 2D slices images
-rm -r $OUTDIR/$SUBID/x
-rm -r $OUTDIR/$SUBID/y
-rm -r $OUTDIR/$SUBID/z
+rm -r $OUTDIR/x
+rm -r $OUTDIR/y
+rm -r $OUTDIR/z

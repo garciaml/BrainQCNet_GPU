@@ -64,9 +64,18 @@ if args.analysis_level == "participant":
                 continue
             
             # Process T1w images in the anat directory
-            for T1_file in glob(os.path.join(anat_dir, "*_T1w.nii*")):
+            # multi-run case
+            #T1_files = glob(os.path.join(anat_dir, "*_run-*_T1w.nii*"))
+            #if not T1_files:
+            T1_files = glob(os.path.join(anat_dir, "*_T1w.nii*"))
+            for T1_file in T1_files:
                 filename = os.path.basename(T1_file)
-                output_subdir = os.path.join(args.output_dir, f"sub-{subject_label}", f"ses-{session}")
+                run_dir = [el for el in os.path.basename(T1_file).split('_') if 'run-' in el]
+                if not run_dir:
+                    run_dir = 'single_run'
+                else:
+                    run_dir = run_dir[0]
+                output_subdir = os.path.join(args.output_dir, f"sub-{subject_label}", f"ses-{session}", run_dir)
                 os.makedirs(output_subdir, exist_ok=True)
                 
                 cmd = f"./preprocess_and_predict.sh {T1_file} {filename} sub-{subject_label} {output_subdir} {args.pythonpath} {args.gpuid} {args.masks} {args.pred_method} {args.n_areas} {args.modeldir}"
@@ -74,17 +83,22 @@ if args.analysis_level == "participant":
 
 # Group-level analysis
 elif args.analysis_level == "group":
-    df_all = pd.DataFrame({"subid": [], "session": [], "proba": [], "t": [], "pred": []})
+    df_all = pd.DataFrame({"subid": [], "session": [], "run": [], "proba": [], "t": [], "pred": []})
     for subject_label in subjects_to_analyze:
         session_dirs = glob(os.path.join(args.output_dir, f"sub-{subject_label}", "ses-*"))
         if not session_dirs:  # Handle single-session datasets
-            session_dirs = [os.path.join(args.bids_dir, f"sub-{subject_label}")]
+            session_dirs = [os.path.join(args.output_dir, f"sub-{subject_label}", "single_session")]
         for session_dir in session_dirs:
             if os.path.isdir(session_dir):
-                results_file = os.path.join(session_dir, "tot_df.csv")
-                if os.path.exists(results_file):
-                    df = pd.read_csv(results_file)
-                    df['subid'] = f"sub-{subject_label}"
-                    df['session'] = os.path.basename(session_dir)
-                    df_all = pd.concat([df_all, df], axis=0, ignore_index=True, sort=False)
+                run_dirs = glob(os.path.join(session_dir, "run-*"))
+                if not run_dirs:
+                    run_dirs = [os.path.join(session_dir, "single_run")]
+                for run_dir in run_dirs:
+                    results_file = os.path.join(run_dir, "tot_df.csv")
+                    if os.path.exists(results_file):
+                        df = pd.read_csv(results_file)
+                        df['subid'] = f"sub-{subject_label}"
+                        df['session'] = os.path.basename(session_dir)
+                        df['run'] = os.path.basename(run_dir)
+                        df_all = pd.concat([df_all, df], axis=0, ignore_index=True, sort=False)
     df_all.to_csv(os.path.join(args.output_dir, "group_results.csv"), index=False)
